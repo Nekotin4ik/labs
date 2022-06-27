@@ -5,5 +5,5 @@ let b = a;
 
 export class Animal {
     voice: string;
-    tail: boolean;
+    tail: bool
 }
