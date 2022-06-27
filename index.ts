@@ -1,4 +1,9 @@
 function main() {
     let a = 5;
-let b = a;  
+let b = a;
+}
+
+export class Animal {
+    voice: string;
+    tail: boolean;
 }
