@@ -4,7 +4,10 @@
   "description": "Labs for nodeJS",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ./src/**",
+    "lint:fix": "eslint ./src/** --fix",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
