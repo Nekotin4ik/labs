@@ -1,14 +1,15 @@
+//Do not use already
 
-import express from 'express';
+// import express from 'express';
 
-const userRouter = express.Router();
+// const userRouter = express.Router();
 
-userRouter.get('/login', (req, res) => {
-    res.send(req.body + req.header);
-})
+// userRouter.get('/login', (req, res) => {
+//     res.send(req.body + req.header);
+// })
 
-userRouter.post('/hello', (req, res) => {
-    res.send('hi');
-})
+// userRouter.post('/hello', (req, res) => {
+//     res.send('hi');
+// })
 
-export { userRouter };
+// export { userRouter };

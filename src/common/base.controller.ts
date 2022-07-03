@@ -6,11 +6,9 @@ import { ExpressReturnType, IControllerRoute } from "./route.interface";
 
 export abstract class BaseController {
     private readonly _router: Router;
-    // logger: LoggerService;
 
     constructor(private logger: ILogger) {
         this._router = Router();
-        // this.logger = new LoggerService();
     }
 
     get router(): Router {
@@ -30,8 +28,7 @@ export abstract class BaseController {
         return res.sendStatus(201);
     }
 
-    //public -> protected
-    public bindRoutes(routes: IControllerRoute[]): void {
+    protected bindRoutes(routes: IControllerRoute[]): void {
         for (const route of routes) {
 			this.logger.log('[' + route.method + '] ' + route.path);
 			const middleware = route.middlewares?.map((m) => m.execute.bind(m));

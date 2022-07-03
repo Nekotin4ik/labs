@@ -6,11 +6,6 @@ import { validate } from "class-validator";
 
 export class MiddlewareService implements IMiddleware {
     logger: LoggerService;
-    
-
-    // constructor(logger: LoggerService) {
-    //     this.logger = logger;
-    // }
 
     constructor(private classToValidate: ClassConstructor<object>, logger: LoggerService) {
         this.logger = logger;

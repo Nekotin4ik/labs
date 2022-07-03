@@ -1,5 +1,6 @@
 import { App } from './app';
 import { MiddlewareService } from './common/middleware.service';
+import { ConfigService } from './config/config.service';
 import { PrismaService } from './database/prisma.service';
 import { ExeptionFilter } from './errors/exeption.filter';
 import { LoggerService } from './logger/logger.service';
@@ -15,13 +16,14 @@ async function bootstrap() {
     const prismaService = new PrismaService(logger);
     const userRepository = new UserRepository(prismaService);
     const userService = new UserService(userRepository);
-    // const middleware: UserLoginDto;
+    const configService = new ConfigService(logger);
     const app = new App(
         logger,
-        new UserController(logger, userService),
+        new UserController(logger, userService, configService),
         new ExeptionFilter(logger),
         new MiddlewareService(UserLoginDto, logger),
         new PrismaService(logger),
+        configService,
     );
     await app.init();
 }
