@@ -1,6 +1,8 @@
-import { UserModel } from "@prisma/client";
+import { GunModel, UserModel } from "@prisma/client";
+import { GunRepository } from "../guns/gun.repository";
 import { UserLoginDto } from "./dto/user-login.dto";
 import { UserRegisterDto } from "./dto/user-register.dto";
+import { UserUpdateDto } from "./dto/user-update.dto";
 import { User } from "./user.entity";
 import { UserRepository } from "./user.repository";
 import { IUserService } from "./user.service.interface";
@@ -8,9 +10,11 @@ import { IUserService } from "./user.service.interface";
 
 export class UserService implements IUserService{
     userRepository: UserRepository;
+    gunRepository: GunRepository;
 
-    constructor(userRepository: UserRepository) {
-        this.userRepository = userRepository
+    constructor(userRepository: UserRepository, gunRepository: GunRepository) {
+        this.userRepository = userRepository;
+        this.gunRepository = gunRepository;
     }
 
     // async createUser(dto: UserRegisterDto): Promise<UserModel | null> {
@@ -41,12 +45,39 @@ export class UserService implements IUserService{
         return this.userRepository.create(newUser);
     }
 
-    async deleteUser(id: number, email?: string): Promise<UserModel | null> {
-        return this.userRepository.removeUserById(id, email);
+    async updateUser(id: number, { email, name, password, role}: UserUpdateDto): Promise<UserModel | null> {
+        const updatedUser = new User(email, name, role);
+        await updatedUser.setPassword(password, 10);
+        return this.userRepository.updateUser(id, updatedUser);
+    }
+
+    async deleteUser(email: string): Promise<[UserModel, number] | null> {
+        const user = await this.userRepository.find(email);
+        // while ()
+        if (user) {
+            const user_guns = await this.userRepository.findGunsByUser(user.id);
+            if (user_guns) {
+                for(const user_gun of user_guns) {
+                    this.gunRepository.removeGun(user_gun.name);
+                }
+                this.userRepository.removeUserByEmail(email);
+                return [user, user_guns.length]
+            }
+            return null;
+        }
+        return null;
     }
 
     async getUserInfo(email: string): Promise<UserModel | null> {
         return this.userRepository.find(email);
+    }
+
+    async getGunsByUser(email: string): Promise<GunModel[] | null> {
+        const user = await this.userRepository.find(email);
+        if (!user) {
+            return null;
+        }
+        return this.userRepository.findGunsByUser(user.id);
     }
 
     async getAllUsers(): Promise<UserModel[] | null> {
@@ -54,16 +85,6 @@ export class UserService implements IUserService{
         if (!users) {
             return null;
         }
-        let users_output: UserModel[] = [];
-        for (const user of users) {
-            users_output.push({
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                password: '***',
-                role: user.role
-            })
-        }
-        return users_output;
+        return users;
     }
 }

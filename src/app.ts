@@ -13,6 +13,8 @@ import { PrismaService } from './database/prisma.service';
 import { json } from 'body-parser';
 import { AuthMiddleware } from './common/auth.middleware';
 import { ConfigService } from './config/config.service';
+import { GunController } from './guns/gun.controller';
+import { Gun } from './guns/gun.entity';
 
 export class App {
     app: Express;
@@ -24,6 +26,7 @@ export class App {
     userController: UserController;
     prismaService: PrismaService;
     configService: ConfigService;
+    gunController: GunController;
 
     constructor(
         logger: LoggerService,
@@ -32,6 +35,7 @@ export class App {
         middlewareService: MiddlewareService,
         prismaService: PrismaService,
         configService: ConfigService,
+        gunController: GunController,
     ) {
         this.app = express();
         this.port = 8000;
@@ -41,6 +45,7 @@ export class App {
         this.middlewareService = middlewareService;
         this.prismaService = prismaService;
         this.configService = configService;
+        this.gunController = gunController;
     }
 
     useMiddleware(): void {
@@ -52,6 +57,7 @@ export class App {
 
     useRoutes(): void {
         this.app.use('/users', this.userController.router);
+        this.app.use('/guns', this.gunController.router);
         
     }
 

@@ -21,6 +21,7 @@ model UserModel {
 
 model GunModel {
   id Int @id @default(autoincrement())
+  name String @unique
   type String
   magazine_size Int
   weight Float

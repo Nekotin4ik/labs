@@ -1,4 +1,4 @@
-import { UserModel } from "@prisma/client";
+import { GunModel, UserModel } from "@prisma/client";
 import { PrismaService } from "../database/prisma.service";
 import { LoggerService } from "../logger/logger.service";
 import { User } from "./user.entity";
@@ -38,33 +38,34 @@ export class UserRepository implements IUserRepository{
             
         });
     }
-    
-    async removeUserById(id: number, email?: string): Promise<UserModel | null> {
-        try {
-            if (id && email) {
-                return await this.prismaService.client.userModel.delete({
-                    where: {
-                        id,
-                        email
-                    }
-                })
-            } else if (id) {
-                return await this.prismaService.client.userModel.delete({
-                    where: {
-                        id
-                    }
-                })
-            } else if (email) {
-                return await this.prismaService.client.userModel.delete({
-                    where: {
-                        email
-                    }
-                })
-            } else {
-                return null;
+
+    async updateUser(id: number, {email, name, password, role }: User): Promise<UserModel | null> {
+        return this.prismaService.client.userModel.update({
+            where: {
+                id
+            },
+            data: {
+                email,
+                name,
+                password,
+                role
             }
-        } catch (e) {
-            return null;
-        }
+        })
+    }
+    
+    async removeUserByEmail(email: string): Promise<UserModel | null> {
+        return this.prismaService.client.userModel.delete({
+            where: {
+                email
+            }
+        })
+    }
+
+    async findGunsByUser(user_id: number): Promise<GunModel[] | null> {
+        return this.prismaService.client.gunModel.findMany({
+            where: {
+                user_id
+            }
+        })
     }
 }

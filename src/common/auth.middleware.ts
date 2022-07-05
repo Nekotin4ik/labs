@@ -1,11 +1,15 @@
 import { IMiddleware } from './middleware.interface';
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
+import { UserRepository } from '../users/user.repository';
 
 export class AuthMiddleware implements IMiddleware {
-	constructor(private secret: string) {}
 
-	execute(req: Request, res: Response, next: NextFunction): void {
+	constructor(private secret: string) {
+
+	}
+
+	async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
 		if (req.headers.authorization) {
 			verify(req.headers.authorization.split(' ')[1], this.secret, (err, payload) => {
 				if (err) {
