@@ -7,6 +7,6 @@ export class AuthGuard implements IMiddleware {
         if (req.user) {
             return next();
         }
-        res.status(401).send({ error: 'You are not authorized!' });
+        res.status(400).send({ error: 'You are not authorized!' });
     }
 }
