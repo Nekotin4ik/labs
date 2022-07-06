@@ -1,8 +1,8 @@
 # Project 'Hunter`s club'
-## Language: TypeScript
-## Framework: Express
-## Linter: eslint
-## ORM: Prisma
+<p style="font-size: 20px;"> Language: TypeScript </p>
+<p style="font-size: 20px;"> Framework: Express </p>
+<p style="font-size: 20px;"> Linter: eslint </p>
+<p style="font-size: 20px;"> ORM: Prisma </p>
 
 ___
 ## Database Models
