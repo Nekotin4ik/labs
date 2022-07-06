@@ -1,9 +1,6 @@
-import express, { Express, NextFunction, Response, Request } from 'express';
+import express, { Express, NextFunction, Response, Request, request, response } from 'express';
 import { Server } from 'http';
-// import { userRouter } from './users/user.router';
 import { ExeptionFilter } from './errors/exeption.filter';
-// import { IExeptionFilter } from './errors/exeption.filter.interface';
-// import { ILogger } from './logger/logger.interface';
 import { LoggerService } from './logger/logger.service';
 import { MiddlewareService } from './common/middleware.service';
 import { UserController } from './users/users.controller';
@@ -50,15 +47,13 @@ export class App {
 
     useMiddleware(): void {
         this.app.use(json());
-        // this.app.use(this.middlewareService.execute.bind(this.middlewareService));
         const authMiddleware = new AuthMiddleware(this.configService.get('SECRET'));
         this.app.use(authMiddleware.execute.bind(authMiddleware));
     }
 
     useRoutes(): void {
         this.app.use('/users', this.userController.router);
-        this.app.use('/guns', this.gunController.router);
-        
+        this.app.use('/guns', this.gunController.router);     
     }
 
     useExeptionFilters(): void {

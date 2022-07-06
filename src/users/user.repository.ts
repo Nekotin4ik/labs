@@ -33,10 +33,20 @@ export class UserRepository implements IUserRepository{
         })     
     }
 
-    async findAll(): Promise<UserModel[] | null> {
-        return this.prismaService.client.userModel.findMany({
+    async findAll(role: string): Promise<UserModel[] | {email: string, name: string}[] | null> {
+        if (role == 'ADMIN') {
+            return this.prismaService.client.userModel.findMany({
             
-        });
+            });
+        } else if (role == 'USER') {
+            return this.prismaService.client.userModel.findMany({
+                select: {
+                    email: true,
+                    name: true
+                }
+            });
+        }
+        return null;
     }
 
     async updateUser(id: number, {email, name, password, role }: User): Promise<UserModel | null> {
@@ -57,6 +67,19 @@ export class UserRepository implements IUserRepository{
         return this.prismaService.client.userModel.delete({
             where: {
                 email
+            }
+        })
+    }
+
+    async removeRelatedGuns(email: string): Promise<UserModel | null> {
+        return this.prismaService.client.userModel.update({
+            where: {
+                email
+            },
+            data: {
+                guns: {
+                    deleteMany: {}
+                }
             }
         })
     }

@@ -63,13 +63,29 @@ export class GunRepository implements IGunRepository{
     }
 
     async findGuns(
+        role: string,
         type?: string,
         magazine_size?: number,
         weight?: number,
         caliber?: number
-    ): Promise<GunModel[] | null> {
-        console.log(magazine_size);
+    ): Promise<GunModel[] | {type: string, magazine_size: number, weight: number, caliber: number}[] | null> {
         try {
+            if (role == 'USER') {
+                return await this.prismaService.client.gunModel.findMany({
+                    where: {
+                        type,
+                        magazine_size,
+                        weight,
+                        caliber
+                    },
+                    select: {
+                        type: true,
+                        magazine_size: true,
+                        weight: true,
+                        caliber: true
+                    }
+                })
+            }
             return await this.prismaService.client.gunModel.findMany({
                 where: {
                     type,

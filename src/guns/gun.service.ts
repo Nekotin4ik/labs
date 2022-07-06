@@ -59,11 +59,18 @@ export class GunService implements IGunService {
         return this.gunRepository.findOwner(owner.user_id);
     }
 
-    async getGuns(type?: string, magazine_size?: number, weight?: number, caliber?: number): Promise<GunModel[] | null> {
+    async getGuns(
+        role: string,
+        type?: string,
+        magazine_size?: number,
+        weight?: number,
+        caliber?: number
+    ): Promise<GunModel[] | {type: string, magazine_size: number, weight: number, caliber: number}[] | null> {
         if (type === undefined && magazine_size === undefined && weight === undefined && caliber === undefined) {
-            return this.gunRepository.findGuns();
+            return this.gunRepository.findGuns(role);
         }
         return this.gunRepository.findGuns(
+            role,
             type,
             magazine_size,
             weight,

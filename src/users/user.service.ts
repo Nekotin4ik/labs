@@ -53,17 +53,12 @@ export class UserService implements IUserService{
 
     async deleteUser(email: string): Promise<[UserModel, number] | null> {
         const user = await this.userRepository.find(email);
-        // while ()
         if (user) {
-            const user_guns = await this.userRepository.findGunsByUser(user.id);
-            if (user_guns) {
-                for(const user_gun of user_guns) {
-                    this.gunRepository.removeGun(user_gun.name);
-                }
-                this.userRepository.removeUserByEmail(email);
-                return [user, user_guns.length]
+            await this.userRepository.removeRelatedGuns(email);
+            const result = await this.userRepository.removeUserByEmail(email);
+            if (result) {
+                return [result, 1];
             }
-            return null;
         }
         return null;
     }
@@ -80,8 +75,8 @@ export class UserService implements IUserService{
         return this.userRepository.findGunsByUser(user.id);
     }
 
-    async getAllUsers(): Promise<UserModel[] | null> {
-        const users = await this.userRepository.findAll();
+    async getAllUsers(role: string): Promise<UserModel[] | {email: string, name: string}[] | null> {
+        const users = await this.userRepository.findAll(role);
         if (!users) {
             return null;
         }

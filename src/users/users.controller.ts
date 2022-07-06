@@ -154,25 +154,11 @@ export class UserController extends BaseController implements IUsersController{
         res: Response,
         next: NextFunction
     ): Promise<void> {
-        const results = await this.userService.getAllUsers();
+        const results = await this.userService.getAllUsers(req.role);
         if (!results || results.length == 0) {
             return next(new HTTPError(422, 'There are no users yet')); //необрабатываемый экземпляр
         }
-        if (req.role == 'USER') {
-            let users_output: UserModel[] = [];
-            for (const user of results) {
-                users_output.push({
-                    id: user.id,
-                    name: user.name,
-                    email: user.email,
-                    password: '***',
-                    role: user.role
-                })
-            }
-            this.ok(res, users_output);
-        } else {
-            this.ok(res, results);
-        }    
+        this.ok(res, results);  
     }
 
     async showGunsOfUsers(

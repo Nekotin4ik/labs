@@ -11,6 +11,12 @@ export interface IGunService {
     deleteGun: (name: string) => Promise<GunModel | null>;
     getInfoOwner: (name: string) => Promise<UserModel | null>;
     getInfoUser: (id: number) => Promise<UserModel | null>;
-    getGuns: (type?: string, magazine_size?: number, weight?: number, caliber?: number) => Promise<GunModel[] | null>;
+    getGuns: (
+        role: string,
+        type?: string,
+        magazine_size?: number,
+        weight?: number,
+        caliber?: number
+    ) => Promise<GunModel[] | {type: string, magazine_size: number, weight: number, caliber: number}[] | null>;
     // getAllGuns: () => Promise<GunModel[] | null>;
 }

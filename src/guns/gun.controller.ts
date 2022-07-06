@@ -65,7 +65,11 @@ export class GunController extends BaseController implements IGunController {
         ])
     }
 
-    async buyGun({ body }: Request<{}, {}, GunFindDto>, res: Response, next: NextFunction): Promise<void> {
+    async buyGun(
+        { body }: Request<{}, {}, GunFindDto>,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
         const user = await this.gunService.getInfoUser(body.user_id); //или по другому?
         if (!user) {
             return next(new HTTPError(422, 'There is no such user!')); //необрабатываемый экземпляр
@@ -77,7 +81,11 @@ export class GunController extends BaseController implements IGunController {
             this.ok(res, { type: result.type, id: result.id })
     }
 
-    async showGun({ body }: Request, res: Response, next: NextFunction): Promise<void> {
+    async showGun(
+        { body }: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
         const result = await this.gunService.getInfoGun(body.name);
         if (!result) {
             return next(new HTTPError(422, 'No such gun!')); //необрабатываемый экземпляр
@@ -85,7 +93,11 @@ export class GunController extends BaseController implements IGunController {
         this.ok(res, { name: result.name, type: result.type, weight: result.weight, calibre: result.caliber })
     }
 
-    async updateGun({ body }: Request<{}, {}, GunUpdateDto>, res: Response, next: NextFunction): Promise<void> {
+    async updateGun(
+        { body }: Request<{}, {}, GunUpdateDto>,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
         const result = await this.gunService.updateGun(body);
         if (!result) {
             return next(new HTTPError(422, 'Can`t update gun!')); //необрабатываемый экземпляр
@@ -101,7 +113,11 @@ export class GunController extends BaseController implements IGunController {
             })
     }
 
-    async deleteGun({ body }: Request, res: Response, next: NextFunction): Promise<void> {
+    async deleteGun(
+        { body }: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
         const result = await this.gunService.deleteGun(body.name);
         if (!result) {
             return next(new HTTPError(422, 'No such gun!')); //необрабатываемый экземпляр
@@ -110,7 +126,11 @@ export class GunController extends BaseController implements IGunController {
     }
 
     //вывод владельца по названию оружия
-    async showOwner({ body }: Request, res: Response, next: NextFunction): Promise<void> {
+    async showOwner(
+        { body }: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
         if (!body.name) {
             return next(new HTTPError(400, 'There is no name in input')); //некорректный запрос
         }
@@ -121,45 +141,17 @@ export class GunController extends BaseController implements IGunController {
         this.ok(res, { name: result.name, email: result.email })
     }
 
-    async showGuns({ body, role }: Request, res: Response, next: NextFunction): Promise<void> {
-        const results = await this.gunService.getGuns(body.type, body.magazine_size, body.weight, body.caliber);
+    async showGuns(
+        { body, role }: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> {
+        const results = await this.gunService.getGuns(role, body.type, body.magazine_size, body.weight, body.caliber);
         if (!results) {
             return next(new HTTPError(400, 'Invalid input try to check data!')); //некорректный запрос
         } else if (results.length == 0) {
             return next(new HTTPError(422, 'No guns with such parametrs!')); //необрабатываемый экземпляр
         }
-        if (role == 'ADMIN') {
-            let results_output: [string, string, number, number, number, string][] = [];
-            for (const result of results) {
-                let owner = await this.gunService.getInfoOwner(result.name);
-                if (owner != null) {
-                    results_output.push([
-                        result.name,
-                        result.type,
-                        result.magazine_size,
-                        result.weight,
-                        result.caliber,
-                        owner.name,
-                    ])
-                } 
-            }
-            this.ok(res, results_output);
-        } else {
-            let results_output: [string, number, number, number][] = [];
-            for (const result of results) {
-                let owner = await this.gunService.getInfoOwner(result.name);
-                if (owner != null) {
-                    results_output.push([
-                        result.type,
-                        result.magazine_size,
-                        result.weight,
-                        result.caliber
-                    ])
-                } 
-            }
-            this.ok(res, results_output);
-        }
-        
-        
+        this.ok(res, results);
     }
 }

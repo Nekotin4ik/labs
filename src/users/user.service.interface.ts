@@ -11,5 +11,5 @@ export interface IUserService {
     updateUser: (id: number, { email, name, password, role}: UserUpdateDto) => Promise<UserModel | null>;
     deleteUser: (email: string) => Promise<[UserModel, number] | null>;
     getGunsByUser: (email: string) => Promise<GunModel[] | null>;
-    getAllUsers: () => Promise<UserModel[] | null>;
+    getAllUsers: (role: string) => Promise<UserModel[] | {email: string, name: string}[] | null>;
 }
