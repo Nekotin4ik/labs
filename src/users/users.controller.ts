@@ -107,7 +107,7 @@ export class UserController extends BaseController implements IUsersController{
     ): Promise<void> {
         const userInfo = await this.userService.getUserInfo(user);
         if (!userInfo) {
-            return next(new HTTPError(422, 'There is no such user, wait... You don`t even exist')); //необрабатываемый экземпляр
+            return next(new HTTPError(402, 'There is no such user, wait... You don`t even exist')); //необрабатываемый экземпляр
         }
         this.ok(res, { email: userInfo?.email, id: userInfo?.id, name: userInfo?.name });
     }
