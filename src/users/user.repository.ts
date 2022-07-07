@@ -33,20 +33,19 @@ export class UserRepository implements IUserRepository{
         })     
     }
 
-    async findAll(role: string): Promise<UserModel[] | {email: string, name: string}[] | null> {
-        if (role == 'ADMIN') {
-            return this.prismaService.client.userModel.findMany({
-            
-            });
-        } else if (role == 'USER') {
-            return this.prismaService.client.userModel.findMany({
-                select: {
-                    email: true,
-                    name: true
-                }
-            });
-        }
-        return null;
+    async findAllShortForm(): Promise<{email: string, name: string}[] | null> {
+        return this.prismaService.client.userModel.findMany({
+            select: {
+                email: true,
+                name: true
+            }
+        })
+    }
+
+    async findAllFullForm(): Promise<UserModel[] | null> {
+        return this.prismaService.client.userModel.findMany({
+        
+        })
     }
 
     async updateUser(id: number, {email, name, password, role }: User): Promise<UserModel | null> {

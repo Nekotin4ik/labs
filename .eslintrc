@@ -1,0 +1,24 @@
+{
+	"root": true,                                               //привязываем, шоб он проверял только этот проект
+	"parser": "@typescript-eslint/parser",                      //как парсер так и плагин, мы вручную установили
+	"plugins": [
+		"@typescript-eslint",
+        "sonarjs"                                               //привет плагин сонара
+	],
+	"extends": [                                                //используем рекомендованные конфиги/правила
+		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+        "plugin:sonarjs/recommended"
+	],
+	"rules": {
+		"@typescript-eslint/ban-types": "off",
+		"@typescript-eslint/no-unused-vars": [                  //разрешить висячие структуры вызовов по типу next()
+			"off"
+		],
+		"@typescript-eslint/no-explicit-any": "off",
+		"@typescript-eslint/explicit-function-return-type": [   //заставляет чётко указывать, что возвращает функция
+			"warn"
+		]
+	}
+}

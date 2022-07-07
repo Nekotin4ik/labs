@@ -62,30 +62,47 @@ export class GunRepository implements IGunRepository{
         })
     }
 
-    async findGuns(
-        role: string,
+    async findOwner(id: number): Promise<UserModel | null> {
+        return this.prismaService.client.userModel.findFirst({
+            where: {
+                id
+            }
+        })
+    }
+
+    async findGunsShortForm(
         type?: string,
         magazine_size?: number,
         weight?: number,
         caliber?: number
-    ): Promise<GunModel[] | {type: string, magazine_size: number, weight: number, caliber: number}[] | null> {
+    ): Promise<{type: string, magazine_size: number, weight: number, caliber: number}[] | null> {
         try {
-            if (role == 'USER') {
-                return await this.prismaService.client.gunModel.findMany({
-                    where: {
-                        type,
-                        magazine_size,
-                        weight,
-                        caliber
-                    },
-                    select: {
-                        type: true,
-                        magazine_size: true,
-                        weight: true,
-                        caliber: true
-                    }
-                })
-            }
+            return await this.prismaService.client.gunModel.findMany({
+                where: {
+                    type,
+                    magazine_size,
+                    weight,
+                    caliber
+                },
+                select: {
+                    type: true,
+                    magazine_size: true,
+                    weight: true,
+                    caliber: true
+                }
+            })
+        } catch (e) {
+            return null;
+        }
+    }
+
+    async findGunsFullForm(
+        type?: string,
+        magazine_size?: number,
+        weight?: number,
+        caliber?: number
+    ): Promise<GunModel[] | null>  {
+        try {
             return await this.prismaService.client.gunModel.findMany({
                 where: {
                     type,
@@ -97,13 +114,5 @@ export class GunRepository implements IGunRepository{
         } catch (e) {
             return null;
         }
-    }
-
-    async findOwner(id: number): Promise<UserModel | null> {
-        return this.prismaService.client.userModel.findFirst({
-            where: {
-                id
-            }
-        })
     }
 }

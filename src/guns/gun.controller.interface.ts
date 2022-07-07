@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 
 export interface IGunController {
-    buyGun: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    registerGun: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     showGun: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     updateGun: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     deleteGun: (req: Request, res: Response, next: NextFunction) => Promise<void>;

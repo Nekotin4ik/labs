@@ -1,4 +1,5 @@
 import { GunModel, UserModel } from "@prisma/client";
+import { HTTPError } from "../errors/http-error.class";
 import { GunRepository } from "../guns/gun.repository";
 import { UserLoginDto } from "./dto/user-login.dto";
 import { UserRegisterDto } from "./dto/user-register.dto";
@@ -17,22 +18,19 @@ export class UserService implements IUserService{
         this.gunRepository = gunRepository;
     }
 
-    // async createUser(dto: UserRegisterDto): Promise<UserModel | null> {
-
-    // };
-
-    async validateUser({ email, password }: UserLoginDto): Promise<Boolean> {
+    async validateUser({ email, password }: UserLoginDto): Promise<Boolean | HTTPError> {
+        const errors: HTTPError[] = [];
         const existedUser = await this.userRepository.find(email);
         if (!existedUser) {
-            return false;
+            return new HTTPError('Data', 403, 'Can`t find such user!', undefined, {email: email});
         }
         const newUser = new User(existedUser.email, existedUser.name, existedUser.role, existedUser.password);
         return newUser.comparePassword(password);
     }
 
-    async createUser({ email, name, password, role }: UserRegisterDto): Promise<UserModel | null> {
+    async createUser({ email, name, password, role }: UserRegisterDto): Promise<UserModel | HTTPError | null> {
         if (role != 'USER' && role != 'ADMIN' && role != undefined) {
-            return null;
+            return new HTTPError('Data', 422, 'There is no such role!', undefined, {role: role});
         }
         //добавить логер?
         const newUser = new User(email, name, role);
@@ -75,11 +73,11 @@ export class UserService implements IUserService{
         return this.userRepository.findGunsByUser(user.id);
     }
 
-    async getAllUsers(role: string): Promise<UserModel[] | {email: string, name: string}[] | null> {
-        const users = await this.userRepository.findAll(role);
-        if (!users) {
-            return null;
-        }
-        return users;
+    async getAllUsersShortInfo(): Promise<{email: string, name: string}[] | null> {
+        return this.userRepository.findAllShortForm();
+    }
+
+    async getAllUsersFullInfo(): Promise<UserModel[] | null> {
+        return this.userRepository.findAllFullForm();
     }
 }

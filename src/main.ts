@@ -14,7 +14,7 @@ import { UserService } from './users/user.service';
 import { UserController } from './users/users.controller';
 
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
     const logger = new LoggerService();
     const prismaService = new PrismaService(logger);
     const userRepository = new UserRepository(prismaService);
